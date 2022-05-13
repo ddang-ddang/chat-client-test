@@ -6,7 +6,7 @@ import { useParams } from "react-router-dom";
 
 
 function ChatPage() {
-  const [currentSocket, setCurrentSocket] = useState();
+  // const [currentSocket, setCurrentSocket] = useState();
   const [message, setMessage] = useState('');
   const [chatRoomLst, setChatRoomLst] = useState([]);
   const [chatHistory, setChatHistory] = useState([]);
@@ -38,7 +38,8 @@ function ChatPage() {
         // myInfo.id = socket.id;
         // myInfo.room = response.room;
         // setChatRoomLst([ ...chatRoomLst, room.roomName ])
-        // console.log(response.messages)
+        console.log(userId)
+        console.log(response.messages)
         setChatHistory([...response.messages])
         // console.log(chatHistory);
       });
@@ -87,16 +88,25 @@ function ChatPage() {
               </div>
             </div>
             <div className="mesgs">
-              <ul className="msg_history chat">
+              <div className="msg_history chat">
                 {
-                  // console.log(chatHistory)
                   chatHistory.map((chat) => {
-                    return(
-                      chat['message']
+                    return (
+                      <div>
+                      {chat.userId === Number(userId) ? (
+                        <div style={{ color: 'red' }}>
+                          {chat.message}
+                        </div>
+                      ) : (
+                        <div style={{ color: 'blue' }}>
+                          {chat.message}
+                        </div>
+                      )}
+                    </div>
                     )
                   })
                 }
-              </ul>
+              </div>
               <div className="type_msg">
                 <div className="input_msg_write">
                   <input
