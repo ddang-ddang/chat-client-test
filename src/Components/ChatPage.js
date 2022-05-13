@@ -22,7 +22,6 @@ function ChatPage() {
 
     socket.emit('sendMessage', { userId, body, roomId, roomName }, (response) => {
       console.log(response);
-      
     })
 
     setMessage('')
@@ -39,15 +38,17 @@ function ChatPage() {
         // myInfo.id = socket.id;
         // myInfo.room = response.room;
         // setChatRoomLst([ ...chatRoomLst, room.roomName ])
-        console.log(response)
+        // console.log(response.messages)
+        setChatHistory([...response.messages])
+        // console.log(chatHistory);
       });
-      socket.emit('findAllMessages', { roomId }, (response) => {
-        console.log('모든 메세지 가져오기')
-        console.log(response)
-      })
-      socket.emit('findAllChats', null)
+      // socket.emit('findAllMessages', { roomId }, (response) => {
+      //   console.log('모든 메세지 가져오기')
+      //   console.log(response)
+      // })
+      // socket.emit('findAllChats', null)
     })
-  })
+  }, [])
 
   return (
     <div>
@@ -86,7 +87,16 @@ function ChatPage() {
               </div>
             </div>
             <div className="mesgs">
-              <div className="msg_history chat"></div>
+              <ul className="msg_history chat">
+                {
+                  // console.log(chatHistory)
+                  chatHistory.map((chat) => {
+                    return(
+                      chat['message']
+                    )
+                  })
+                }
+              </ul>
               <div className="type_msg">
                 <div className="input_msg_write">
                   <input
