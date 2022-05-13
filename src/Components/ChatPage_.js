@@ -10,70 +10,49 @@ function ChatPage() {
   const [message, setMessage] = useState('');
   const [chatRoomLst, setChatRoomLst] = useState([]);
   const [chatHistory, setChatHistory] = useState([]);
+  const socket = io.connect('http://localhost:8080')
+  // let socket;
   const params = useParams()
 
   const { userId, nickname, roomId, roomName } = params
 
-  const [socket, setSocket] = useState();
-  
-  useEffect(() => {
-    const socketIo = io("http://localhost:8080", {
-      cors: { 
-        origin: "http://localhost:8080", credentials: true
-      },
-      transports: ["websocket"],
-      query: { tenant: 'EGU' }
-    })
+  socket.on('connect', () => {
+    console.log('connected')
+  })
 
-    socketIo.on('responsRoom', (data) => {
-      console.log(data)
-    }) 
-
-    setSocket(socketIo)
-
-    socketIo.emit('enterRoom', { userId, nickname, roomId, roomName }, (response) => {
-      console.log(response)
-      setChatHistory([...response.messages])
-    })
-  }, [])
-  
-  useEffect(() => {
-    return (() => {
-      if (socket) { socket.disconnect(); }
-    }) 
-  }, [socket]) 
-  
-  const joinRoom = () => {
-    socket.emit('refresh', { noticeNo: params?.noticeNo })
+  const enterRoom = () => {
+    
   }
 
-  const sendMessage = () => {
-    const body = {
-      message
+  const sendMessage = (e) => {
+    e.preventDefault()
+    let body = {
+      message,
     }
 
-    socket.emit('sendMessage', { userId, body, roomId, roomName }, (response) => {
+    console.log(body);
 
-    })
-
-    setChatHistory([
-      ...chatHistory,
-      {
-        userId: Number(userId),
-        roomId,
-        message,
-      }
-    ])
-
-    console.log(chatHistory)
-    console.log(message)
-
+    socket.emit('sendMessage', { userId, body, roomId, roomName })
 
     setMessage('')
   }
 
 
+  useEffect(() => {
+    socket.on('connect', () => {
+      console.log("connected");
 
+      socket.emit('enterRoom', { userId, nickname, roomId, roomName }, (response) => {
+        console.log(userId)
+        console.log(response.messages)
+        setChatHistory([...response.messages])
+      });
+
+      // socket.on('getMessages', (response) => {
+      //   console.log('response', response)
+      // })
+    })
+  }, [socket])
 
   return (
     <div>
