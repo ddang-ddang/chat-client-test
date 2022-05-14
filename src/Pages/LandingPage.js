@@ -7,11 +7,6 @@ function LandingPage() {
   const [roomId, setRoomId] = useState(0)
   const [roomName, setRoomName] = useState('')
 
-  const submitHandler = () => {
-
-  }
-
-
   return (
     <div>
       <form>

@@ -6,67 +6,60 @@ import { useParams } from 'react-router-dom';
 
 let socket;
 const ChatPage = () => {
-    const [message, setMessage] = useState('');
-    const [chatRoomLst, setChatRoomLst] = useState([]);
-    const [chatHistory, setChatHistory] = useState([]);
-    const params = useParams();
-    const socketUrl = 'http://localhost:8080'
+  const [message, setMessage] = useState('');
+  const [chatRoomLst, setChatRoomLst] = useState([]);
+  const [chatHistory, setChatHistory] = useState([]);
+  const params = useParams();
+  const socketUrl = 'http://localhost:8080'
 
-    const { userId, nickname, roomId, roomName } = params
+  const { userId, nickname, roomId, roomName } = params
 
-    useEffect(() => {
-        const search = window.location.search;
+  useEffect(() => {
+    const search = window.location.search;
+    socket = io(socketUrl, {
+      cors: {
+        origin: socketUrl, credentials: true
+      },
+    });
 
-        socket = io(socketUrl, {
-          cors: {
-            origin: socketUrl, credentials: true
-          },
-        });
 
+    socket.emit('enterRoom', { userId, nickname, roomId, roomName }, (response) => {
+      console.log('response', response)
+      setChatHistory([ ...response.messages ])
+    })
 
-        socket.emit('enterRoom', { userId, nickname, roomId, roomName }, (response) => {
-          console.log('response', response)
-          setChatHistory([ ...response.messages ])
-        })
+    // socket.on('getMessage', (data) => {
+    //   console.log(data)
 
-        // socket.on('getMessage', (data) => {
-        //   console.log(data)
+    // })
 
-        // })
-
-        return () => {
-            // User leaves room
-            socket.disconnect();
-
-            socket.off()
-        }
-
-    }, [socketUrl,window.location.search])
-
-    useEffect(() => {
-        socket.on('getMessage', msg => {
-            setChatHistory(prevMsg => [...prevMsg, msg])
-
-            setTimeout(() => {
-
-                var div = document.getElementById("chat_body");
-                div.scrollTop = div.scrollHeight - div.clientWidth;
-            }, 10)
-        })
-    }, [])
-
-    const sendMessage = (e) => {
-        e.preventDefault();
-
-        console.log('hello world')
-       
-        socket.emit('sendMessage', { userId, nickname, roomId, roomName, message }, () => setMessage(''))
-        setMessage('')
-        setTimeout(() => {
-            var div = document.getElementById("chat_body");
-            div.scrollTop = div.scrollHeight ;
-        }, 100)
+    return () => {
+        // User leaves room
+        socket.disconnect();
+        socket.off()
     }
+  }, [socketUrl,window.location.search])
+
+  useEffect(() => {
+    socket.on('getMessage', msg => {
+      setChatHistory(prevMsg => [...prevMsg, msg])
+      setTimeout(() => {
+        var div = document.getElementById("chat_body");
+        div.scrollTop = div.scrollHeight - div.clientWidth;
+      }, 10)
+    })
+  }, [])
+
+  const sendMessage = (e) => {
+    e.preventDefault();
+
+    socket.emit('sendMessage', { userId, nickname, roomId, roomName, message }, () => setMessage(''))
+    setMessage('')
+    setTimeout(() => {
+        var div = document.getElementById("chat_body");
+        div.scrollTop = div.scrollHeight ;
+    }, 100)
+  }
 
   return (
     <div>
@@ -105,7 +98,7 @@ const ChatPage = () => {
               </div>
             </div>
             <div className="mesgs">
-              <div className="msg_history chat" id="chat_body">
+              <div className="msg_history chat" id='chat_body'>
                 {
                   chatHistory.map((chat) => {
                     return (

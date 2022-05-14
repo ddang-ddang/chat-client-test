@@ -14,4 +14,4 @@ console창에서는 데이터가 전부 보이는데 브라우져상에서 텍�
 ### 해결방법
 기존에는 socket을 useState로 관리하여 처음 연결시 socket을 set해주고 state로 관리되는 socket에서 메서드를 실행했습니다.
 
-socket은 컴포넌트 바깥에 선언하고 컴포넌트 안에서 socket을 연결하는 것으로 변경하였고 
+socket은 컴포넌트 바깥에 선언하고 컴포넌트 안에서 socket을 연결하는 것으로 변경하였고 방에 들어가는 함수가 끝난 후 전체 메세지를 useState로 set해 주었습니다.
