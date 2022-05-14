@@ -1,70 +1,17 @@
-# Getting Started with Create React App
+# Trouble shooting
+## 1. socket.on으로 서버에서 통신 받을 때 'on'이라는 메서드를 읽지 못하는 현상
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+### 해결방법
+socket이 정의 되어있지 않기 때문이라고 가정하여 socket을 적절한 위치에 넣기 위해 고민했습니다.
+그냥 컴포넌트 안에 쓰면 안되고 socket이 연결되는 useEffect안에서 처리를 해야 작동하였습니다.
 
-## Available Scripts
 
-In the project directory, you can run:
+## 1. 방전체에 emit을 하여 메세지를 뿌려줘야하는데 자신의 클라이언트에서만 메세지가 보이는 현상
 
-### `npm start`
+### 개요
+console창에서는 데이터가 전부 보이는데 브라우져상에서 텍스트(메세지)가 추가되지 않음.
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+### 해결방법
+기존에는 socket을 useState로 관리하여 처음 연결시 socket을 set해주고 state로 관리되는 socket에서 메서드를 실행했습니다.
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
-
-### `npm test`
-
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
-
-### `npm run build`
-
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
-
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
-
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
-
-### `npm run eject`
-
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
-
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
-
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+socket은 컴포넌트 바깥에 선언하고 컴포넌트 안에서 socket을 연결하는 것으로 변경하였고 

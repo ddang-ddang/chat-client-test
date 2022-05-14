@@ -16,7 +16,6 @@ const ChatPage = () => {
 
     useEffect(() => {
         const search = window.location.search;
-        // const params = new URLSearchParams(search);
 
         socket = io(socketUrl, {
           cors: {
@@ -110,19 +109,19 @@ const ChatPage = () => {
                 {
                   chatHistory.map((chat) => {
                     return (
-                      <div>
-                      {/* {console.log('chat.userId', chat.userId)} */}
-                      {/* {console.log('userId', userId)} */}
-                      {Number(chat.userId) === Number(userId) ? (
-                        <div style={{ color: 'red' }}>
-                          {chat.message}
-                        </div>
-                      ) : (
-                        <div style={{ color: 'blue' }}>
-                          {chat.message}
-                        </div>
-                      )}
-                    </div>
+                      <div style={{ display: 'flex' }}>
+                        {/* {console.log('chat.userId', chat.userId)} */}
+                        {/* {console.log('userId', userId)} */}
+                        {Number(chat.userId) === Number(userId) ? (
+                          <div style={{ color: 'red', border: 'solid', width: 'fit-content', marginLeft: 'auto'}}>
+                            {chat.message}
+                          </div>
+                        ) : (
+                          <div style={{ color: 'blue', border: 'solid', width: 'fit-content'}}>
+                            {chat.message}
+                          </div>
+                        )}
+                      </div>
                     )
                   })
                 }
