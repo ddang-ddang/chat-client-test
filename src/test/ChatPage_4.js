@@ -25,6 +25,7 @@ function ChatPage() {
       query: { tenant: 'EGU' }
     })
 
+
     socketIo.on('responseRoom', (data) => {
       console.log(data)
     }) 
@@ -33,22 +34,27 @@ function ChatPage() {
     setSocket(socketIo)
 
     socketIo.emit('enterRoom', { userId, nickname, roomId, roomName }, (response) => {
-      console.log(response)
+      console.log('리스폰', response)
       setChatHistory([...response.messages])
     })
 
 
-    socketIo.on('getMessage', ({ userId, nickname, roomId, message }) => {
-      setChatHistory([
-        ...chatHistory,
-        {
-          userId,
-          nickname,
-          roomId,
-          message,
-        }
-      ])
+
+    // socketIo.on('getMessage', ({ userId, nickname, roomId, message }) => {
+    socketIo.on('getMessage', (data) => {
+
+      console.log(data)
+      // setChatHistory([
+      //   ...chatHistory,
+      //   {
+      //     userId,
+      //     nickname,
+      //     roomId,
+      //     message,
+      //   }
+      // ])
     })
+
   }, [])
   
   useEffect(() => {
@@ -56,17 +62,11 @@ function ChatPage() {
       if (socket) { socket.disconnect(); }
     })    
   }, [socket])
-  
-  const joinRoom = () => {
-    socket.emit('refresh', { noticeNo: params?.noticeNo })
-  }
 
   const sendMessage = () => {
     const body = {
       message
     }
-    console.log(body)
-
     socket.emit('sendMessage', { userId, body, roomId, roomName })
     
     setChatHistory([
@@ -127,8 +127,8 @@ function ChatPage() {
                   chatHistory.map((chat) => {
                     return (
                       <div>
-                      {console.log('chat.userId', chat.userId)}
-                      {console.log('userId', userId)}
+                      {/* {console.log('chat.userId', chat.userId)} */}
+                      {/* {console.log('userId', userId)} */}
                       {Number(chat.userId) === Number(userId) ? (
                         <div style={{ color: 'red' }}>
                           {chat.message}

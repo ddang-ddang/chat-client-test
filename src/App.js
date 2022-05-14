@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { BrowserRouter as Router, Route, Routes, Link } from 'react-router-dom'
-import ChatPage from './Components/ChatPage';
+import ChatPage from './Pages/ChatPage';
 import LandingPage from './Pages/LandingPage'
 
 function App() {
