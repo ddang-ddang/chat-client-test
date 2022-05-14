@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useState } from "react";
 import "./style.css";
 import { Helmet } from "react-helmet";
 import { io } from 'socket.io-client';
@@ -14,7 +14,20 @@ function ChatPage() {
 
   const { userId, nickname, roomId, roomName } = params
 
-  const [socket, setSocket] = useState(null);
+  const [socket, setSocket] = useState();
+
+
+  // socket.on('getMessage', ({ id, nickname, roomId, message }) => {
+  //   setChatHistory([
+  //     ...chatHistory,
+  //     {
+  //       userId: id,
+  //       nickname,
+  //       roomId,
+  //       message,
+  //     }
+  //   ])
+  // })
   
   useEffect(() => {
     const socketIo = io("http://localhost:8080", {
@@ -29,7 +42,6 @@ function ChatPage() {
       console.log(data)
     }) 
 
-
     setSocket(socketIo)
 
     socketIo.emit('enterRoom', { userId, nickname, roomId, roomName }, (response) => {
@@ -37,24 +49,20 @@ function ChatPage() {
       setChatHistory([...response.messages])
     })
 
-
-    socketIo.on('getMessage', ({ userId, nickname, roomId, message }) => {
-      setChatHistory([
-        ...chatHistory,
-        {
-          userId,
-          nickname,
-          roomId,
-          message,
-        }
-      ])
-    })
+    // socketIo.on('getMessage', ({ id, nickname, roomId, roomName }) => {
+    //   console.log('id', id)
+    //   console.log('id', nickname)
+    //   console.log('id', roomId)
+    //   console.log('id', roomName)
+    // })
   }, [])
   
   useEffect(() => {
     return (() => {
       if (socket) { socket.disconnect(); }
-    })    
+    }) 
+
+    
   }, [socket])
   
   const joinRoom = () => {
@@ -65,10 +73,10 @@ function ChatPage() {
     const body = {
       message
     }
-    console.log(body)
 
     socket.emit('sendMessage', { userId, body, roomId, roomName })
     
+
     setChatHistory([
       ...chatHistory,
       {
@@ -80,7 +88,28 @@ function ChatPage() {
     ])
 
     setMessage('')
+
   }
+
+
+  useEffect(() => {
+    socket.on('getMessage', ({ id, nickname, roomId, message }) => {
+      setChatHistory([
+        ...chatHistory,
+        {
+          userId: id,
+          nickname,
+          roomId,
+          message,
+        }
+      ])
+    })
+
+
+    return () => {
+      socket.off('getMessage');
+    };
+  });
 
 
 
@@ -127,9 +156,7 @@ function ChatPage() {
                   chatHistory.map((chat) => {
                     return (
                       <div>
-                      {console.log('chat.userId', chat.userId)}
-                      {console.log('userId', userId)}
-                      {Number(chat.userId) === Number(userId) ? (
+                      {chat.userId === Number(userId) ? (
                         <div style={{ color: 'red' }}>
                           {chat.message}
                         </div>
