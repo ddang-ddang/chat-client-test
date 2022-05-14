@@ -51,7 +51,7 @@ const ChatPage = () => {
   }, [])
 
   const sendMessage = (e) => {
-    e.preventDefault();
+    // e.preventDefault();
 
     socket.emit('sendMessage', { userId, nickname, roomId, roomName, message }, () => setMessage(''))
     setMessage('')
@@ -59,6 +59,13 @@ const ChatPage = () => {
         var div = document.getElementById("chat_body");
         div.scrollTop = div.scrollHeight ;
     }, 100)
+  }
+
+  const onEnterInput = (e) => {
+    if(e.key === 'Enter') {
+      console.log('enter pushed!!!')
+      sendMessage();
+  }
   }
 
   return (
@@ -127,6 +134,7 @@ const ChatPage = () => {
                     placeholder="Type a message"
                     value={message}
                     onChange={(event) => {setMessage(event.target.value)}}
+                    onKeyPress={onEnterInput} 
                   />
                   <button onClick={sendMessage} className="msg_send_btn sendMessage" type="button">
                     <i className="fa fa-paper-plane-o" aria-hidden="true"></i>

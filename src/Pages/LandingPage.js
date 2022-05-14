@@ -10,28 +10,29 @@ function LandingPage() {
   return (
     <div>
       <form>
-        <div>
-          <div>userId</div>
+        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
+          <h1>userId</h1>
           <input 
             name='userId'
             onChange={(event) => {setUserId(event.target.value)}}
             placeholder='userId' />
-          <div>nickname</div>
+          <h1>nickname</h1>
           <input
             name='nickname'
             onChange={(event) => {setNickname(event.target.value)}}
             placeholder='nickname' />
-          <div>roomId</div>
+          <h1>roomId</h1>
           <input
             name='roomId'
             onChange={(event) => {setRoomId(event.target.value)}}
             placeholder='roomId' />
-          <div>roomName</div>
+          <h1>roomName</h1>
           <input 
             name='roomName'
             onChange={(event) => {setRoomName(event.target.value)}}
             placeholder='roomName' />
-            <Link to={`/chat/${userId}/${nickname}/${roomId}/${roomName}`}>sdfsdf</Link>
+          <p></p>
+          <Link to={`/chat/${userId}/${nickname}/${roomId}/${roomName}`}>마을채팅방 입장!</Link>
         </div>
       </form>
     </div>
