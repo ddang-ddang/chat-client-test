@@ -34,9 +34,10 @@ const ChatPage = () => {
     // })
 
     return () => {
-        // User leaves room
-        socket.disconnect();
-        socket.off()
+      // User leaves room
+      // socket.emit('exitRoom', { userId, nickname, roomId, roomName }, () => {})
+      socket.disconnect();
+      socket.off()
     }
   }, [socketUrl,window.location.search])
 
@@ -61,11 +62,16 @@ const ChatPage = () => {
     }, 100)
   }
 
+  const exitRoom = () => {
+    socket.emit('exitRoom', { roomId, roomName }, () => {
+      console.log('됐나??')
+    })
+  }
+
   const onEnterInput = (e) => {
     if(e.key === 'Enter') {
-      console.log('enter pushed!!!')
       sendMessage();
-  }
+    }
   }
 
   return (
@@ -110,15 +116,19 @@ const ChatPage = () => {
                   chatHistory.map((chat) => {
                     return (
                       <div style={{ display: 'flex' }}>
-                        {/* {console.log('chat.userId', chat.userId)} */}
-                        {/* {console.log('userId', userId)} */}
                         {Number(chat.userId) === Number(userId) ? (
                           <div style={{ color: 'red', border: 'solid', width: 'fit-content', marginLeft: 'auto'}}>
                             {chat.message}
+                            <div>
+                              {chat.nickname}
+                            </div>
                           </div>
                         ) : (
                           <div style={{ color: 'blue', border: 'solid', width: 'fit-content'}}>
                             {chat.message}
+                            <div>
+                              {chat.nickname}
+                            </div>
                           </div>
                         )}
                       </div>
@@ -139,7 +149,7 @@ const ChatPage = () => {
                   <button onClick={sendMessage} className="msg_send_btn sendMessage" type="button">
                     <i className="fa fa-paper-plane-o" aria-hidden="true"></i>
                   </button>
-                  <button className="exit_btn exitRoom" type="button">
+                  <button onClick={exitRoom} className="exit_btn exitRoom" type="button">
                     <i className="fa fa-paper-plane-o" aria-hidden="true"> 나가기</i>
                   </button>
                 </div>
