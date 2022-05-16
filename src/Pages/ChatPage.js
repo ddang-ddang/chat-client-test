@@ -25,7 +25,7 @@ const ChatPage = () => {
 
     socket.emit('enterRoom', { userId, nickname, roomId, roomName }, (response) => {
       console.log('response', response)
-      setChatHistory([ ...response.messages ])
+      // setChatHistory([ ...response.messages ])
     })
 
     // socket.on('getMessage', (data) => {
@@ -36,10 +36,11 @@ const ChatPage = () => {
     return () => {
       // User leaves room
       // socket.emit('exitRoom', { userId, nickname, roomId, roomName }, () => {})
+      exitRoom();
       socket.disconnect();
       socket.off()
     }
-  }, [socketUrl,window.location.search])
+  }, [socketUrl, window.location.search])
 
   useEffect(() => {
     socket.on('getMessage', msg => {
@@ -54,7 +55,10 @@ const ChatPage = () => {
   const sendMessage = (e) => {
     // e.preventDefault();
 
-    socket.emit('sendMessage', { userId, nickname, roomId, roomName, message }, () => setMessage(''))
+    socket.emit('sendMessage', { userId, nickname, roomId, roomName, message }, (response) => {
+      console.log(response)
+      alert(response.error)
+    })
     setMessage('')
     setTimeout(() => {
         var div = document.getElementById("chat_body");
@@ -119,16 +123,16 @@ const ChatPage = () => {
                         {Number(chat.userId) === Number(userId) ? (
                           <div style={{ color: 'red', border: 'solid', width: 'fit-content', marginLeft: 'auto'}}>
                             {chat.message}
-                            <div>
+                            {/* <div>
                               {chat.nickname}
-                            </div>
+                            </div> */}
                           </div>
                         ) : (
                           <div style={{ color: 'blue', border: 'solid', width: 'fit-content'}}>
                             {chat.message}
-                            <div>
+                            {/* <div>
                               {chat.nickname}
-                            </div>
+                            </div> */}
                           </div>
                         )}
                       </div>
