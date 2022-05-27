@@ -9,10 +9,12 @@ const ChatPage = () => {
   const [message, setMessage] = useState('');
   const [chatRoomLst, setChatRoomLst] = useState([]);
   const [chatHistory, setChatHistory] = useState([]);
+  const [scroll, setScroll] = useState(0);
   const params = useParams();
   const socketUrl = 'http://localhost:8080'
+  // const socketUrl = 'http://diasm.mooo.com:3002'
 
-  const { userId, nickname, roomId, roomName } = params
+  const { userId, nickname, roomName } = params
 
   useEffect(() => {
     const search = window.location.search;
@@ -23,19 +25,17 @@ const ChatPage = () => {
     });
 
 
-    socket.emit('enterRoom', { userId, nickname, roomId, roomName }, (response) => {
+    socket.emit('enterRoom', { userId, nickname, roomName }, (response) => {
       console.log('response', response)
-      // setChatHistory([ ...response.messages ])
+      setChatHistory([ ...response.messages ]) // 기존 전체 메세지를 가져옴
+      setTimeout(() => {
+          var div = document.getElementById("chat_body");
+          div.scrollTop = div.scrollHeight ;
+      }, 100)
     })
-
-    // socket.on('getMessage', (data) => {
-    //   console.log(data)
-
-    // })
 
     return () => {
       // User leaves room
-      // socket.emit('exitRoom', { userId, nickname, roomId, roomName }, () => {})
       socket.disconnect();
       socket.off()
     }
@@ -43,7 +43,10 @@ const ChatPage = () => {
 
   useEffect(() => {
     socket.on('getMessage', msg => {
-      setChatHistory(prevMsg => [...prevMsg, msg])
+      console.log(msg)
+      if (msg.id !== socket.id) {
+        setChatHistory(prevMsg => [...prevMsg, msg])
+      }
       setTimeout(() => {
         var div = document.getElementById("chat_body");
         div.scrollTop = div.scrollHeight - div.clientWidth;
@@ -54,7 +57,7 @@ const ChatPage = () => {
   const sendMessage = (e) => {
     // e.preventDefault();
 
-    socket.emit('sendMessage', { userId, nickname, roomId, roomName, message }, (response) => {
+    socket.emit('sendMessage', { userId, nickname, roomName, message }, (response) => {
       console.log(response)
       alert(response.error)
     })
@@ -65,8 +68,9 @@ const ChatPage = () => {
     }, 100)
   }
 
+  /* 이 부분 변경 재혁님한테 말씀드리기 */
   const exitRoom = () => {
-    socket.emit('exitRoom', { roomId, roomName }, () => {
+    socket.emit('exitRoom', { userId, nickname, roomName }, () => {
       console.log('됐나??')
     })
   }
@@ -82,6 +86,15 @@ const ChatPage = () => {
     event.preventDefault();
     exitRoom();
   });
+
+  const listener = () => {
+    setScroll(window.pageYOffset);
+  }
+
+  useEffect(() => {
+    window.addEventListener('scroll', listener)
+    console.log('위로?')
+  })
 
 
   return (

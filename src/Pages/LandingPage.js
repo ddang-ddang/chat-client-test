@@ -21,18 +21,18 @@ function LandingPage() {
             name='nickname'
             onChange={(event) => {setNickname(event.target.value)}}
             placeholder='nickname' />
-          <h1>roomId</h1>
+          {/* <h1>roomId</h1>
           <input
             name='roomId'
             onChange={(event) => {setRoomId(event.target.value)}}
-            placeholder='roomId' />
+            placeholder='roomId' /> */}
           <h1>roomName</h1>
           <input 
             name='roomName'
             onChange={(event) => {setRoomName(event.target.value)}}
             placeholder='roomName' />
           <p></p>
-          <Link to={`/chat/${userId}/${nickname}/${roomId}/${roomName}`}>마을채팅방 입장!</Link>
+          <Link to={`/chat/${userId}/${nickname}/${roomName}`}>마을채팅방 입장!</Link>
         </div>
       </form>
     </div>
