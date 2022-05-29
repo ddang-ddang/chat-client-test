@@ -9,7 +9,7 @@ const ChatPage = () => {
   const [message, setMessage] = useState('');
   const [chatRoomLst, setChatRoomLst] = useState([]);
   const [chatHistory, setChatHistory] = useState([]);
-  const [scroll, setScroll] = useState(0);
+  const [memberCnt, setMemberCnt] = useState(0);
   const params = useParams();
   const socketUrl = 'http://localhost:8080'
   // const socketUrl = 'http://diasm.mooo.com:3002'
@@ -27,6 +27,7 @@ const ChatPage = () => {
 
     socket.emit('enterRoom', { userId, nickname, roomName }, (response) => {
       console.log('response', response)
+      setMemberCnt(response.memberCnt)
       setChatHistory([ ...response.messages ]) // 기존 전체 메세지를 가져옴
       setTimeout(() => {
           var div = document.getElementById("chat_body");
@@ -44,6 +45,7 @@ const ChatPage = () => {
   useEffect(() => {
     socket.on('getMessage', msg => {
       console.log(msg)
+      setMemberCnt(msg.memberCnt)
       if (msg.id !== socket.id) {
         setChatHistory(prevMsg => [...prevMsg, msg])
       }
@@ -70,7 +72,8 @@ const ChatPage = () => {
 
   /* 이 부분 변경 재혁님한테 말씀드리기 */
   const exitRoom = () => {
-    socket.emit('exitRoom', { userId, nickname, roomName }, () => {
+    socket.emit('exitRoom', { userId, nickname, roomName }, (response) => {
+      setMemberCnt(response.memberCnt)
       console.log('됐나??')
     })
   }
@@ -86,15 +89,6 @@ const ChatPage = () => {
     event.preventDefault();
     exitRoom();
   });
-
-  const listener = () => {
-    setScroll(window.pageYOffset);
-  }
-
-  useEffect(() => {
-    window.addEventListener('scroll', listener)
-    console.log('위로?')
-  })
 
 
   return (
@@ -120,6 +114,9 @@ const ChatPage = () => {
             <div className="inbox_people">
               <div className="headind_srch">
                 <div className="recent_heading">
+                  {
+                    memberCnt ? memberCnt : 0
+                  }
                   <h4>Chat Room</h4>
                 </div>
               </div>
